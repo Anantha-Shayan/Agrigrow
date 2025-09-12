@@ -2,7 +2,7 @@ from kaggle.api.kaggle_api_extended import KaggleApi
 import pandas as pd
 import zipfile, os
 
-def load_kaggle_csv(dataset_slug, filename):
+def load_kaggle_csv(dataset_slug, *filename):
     """
     Download a Kaggle dataset and return a pandas DataFrame.
     The downloaded zip is deleted after extraction.
