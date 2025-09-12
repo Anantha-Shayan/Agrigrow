@@ -26,7 +26,6 @@ targetenc_cols = ["District", "Commodity", "Variety"]
 hash_cols = ["Market"]
 
 
-# Define transformers
 preprocessor = ColumnTransformer(
 transformers=[
 ("onehot", OneHotEncoder(handle_unknown="ignore"), onehot_cols),
@@ -91,9 +90,7 @@ best_model = results_df.sort_values(by="RMSE").iloc[0]
 print("\nBest Model:")
 print(best_model)
 
-# -------------------------
 # Fit the best model on full data
-# -------------------------
 best_model_name = results_df.sort_values(by="RMSE").index[0]
 best_model_instance = models[best_model_name]
 
@@ -106,9 +103,7 @@ pipeline = Pipeline([
 # Fit on full dataset
 pipeline.fit(X, y)
 
-# -------------------------
 # Example: Predict mode price for a sample input
-# -------------------------
 # Sample input format should match columns of X
 sample_input = pd.DataFrame({
     "State": ["Karnataka"],
