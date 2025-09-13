@@ -83,11 +83,8 @@ def fetch_market_prices(state, district, crops, date=None):
     return prices
 
 
-
-# Rule-based filter
-def rule_based_filter(temp, humidity, rainfall):
-
-    rules = { # temp (°C), rainfall (mm), humidity (%)
+def check_crop_suitability(crop, temp, humidity, rainfall):
+    rules = {
         "rice": {"temp": (20, 35), "rainfall": (100, float("inf")), "humidity": (60, 85)},
         "maize": {"temp": (18, 27), "rainfall": (50, 100), "humidity": (50, 70)},
         "jute": {"temp": (24, 37), "rainfall": (150, float("inf")), "humidity": (65, 90)},
@@ -111,33 +108,27 @@ def rule_based_filter(temp, humidity, rainfall):
         "chickpea": {"temp": (10, 30), "rainfall": (40, 60), "humidity": (40, 60)},
         "coffee": {"temp": (15, 28), "rainfall": (150, float("inf")), "humidity": (70, 90)},
     }
-    suitable_crops = []
-    for crop, limits in rules.items():
-        if (limits["temp"][0] <= temp <= limits["temp"][1] and
-            limits["rainfall"][0] <= rainfall <= limits["rainfall"][1] and
-            limits["humidity"][0] <= humidity <= limits["humidity"][1]):
-            suitable_crops.append(crop)
-    
-    if not suitable_crops:
-        global message
-        message = "⚠️ No crops matched exactly for the weather condition. Suggesting nearest match instead."
-        # Find crop with minimum "distance" from limits
-        closest_crop, closest_diff = None, float("inf")
-        for crop, limits in rules.items():
-            diff = abs(temp - np.mean(limits["temp"])) \
-                 + abs(rainfall - np.mean(limits["rainfall"])) \
-                 + abs(humidity - np.mean(limits["humidity"]))
-            if diff < closest_diff:
-                closest_crop, closest_diff = crop, diff
-        suitable_crops = [closest_crop]
-    else : 
-        message = ""           
-    return suitable_crops
+
+    if crop not in rules:
+        return f"No rules defined for {crop}"
+
+    limits = rules[crop]
+    reasons = []
+
+    if not (limits["temp"][0] <= temp <= limits["temp"][1]):
+        reasons.append(f"temperature={temp}°C (expected {limits['temp'][0]}–{limits['temp'][1]}°C)")
+    if not (limits["rainfall"][0] <= rainfall <= limits["rainfall"][1]):
+        reasons.append(f"rainfall={rainfall}mm (expected {limits['rainfall'][0]}–{limits['rainfall'][1]}mm)")
+    if not (limits["humidity"][0] <= humidity <= limits["humidity"][1]):
+        reasons.append(f"humidity={humidity}% (expected {limits['humidity'][0]}–{limits['humidity'][1]}%)")
+
+    if reasons:
+        return f"⚠️ Recommended crop {crop} is not suitable due to: {', '.join(reasons)}"
+    else:
+        return f"✅ Recommended crop {crop} is suitable under current weather conditions."
 
 
-# Advisory Function
-def give_advice(user_input, city, state, district):
-
+def give_advice(user_input, state, district):
     # Ensure correct feature order (same as model training)
     features_order = ["N", "P", "K", "temperature", "humidity", "ph", "rainfall"]
 
@@ -151,38 +142,47 @@ def give_advice(user_input, city, state, district):
     else:
         raise ValueError("❌ user_input must be dict, list, np.array, or DataFrame")
 
-
+    # Scale soil data
     soil_scaled = scaler.transform(user_df)
 
+    # Predict ML suggested crop
     ml_pred_idx = model.predict(soil_scaled)[0]
     ml_crop = encoder.inverse_transform([ml_pred_idx])[0]
 
-    weather_data = get_weather(city)
+    # Fetch weather data
+    weather_data = get_weather(district)
     temp = weather_data["temp"]
     humidity = weather_data["humidity"]
     rainfall = weather_data["rainfall"]
 
-    suitable_crops = rule_based_filter(temp, humidity, rainfall)
-    if ml_crop not in suitable_crops:
-        print(f"⚠️ Recommended crop {ml_crop} is not suitable under current weather conditions.")
-        print(message)
-        if suitable_crops:
-            ml_crop = suitable_crops[0]
+    # Print current weather
+    print(f"\n🌦 Current Weather: Temp={temp}°C, Humidity={humidity}%, Rainfall={rainfall}mm")
 
-    market_prices = fetch_market_prices('Karnataka', 'Bangalore', ['Brinjal', 'Tomato', 'Raddish'], date=datetime.now().strftime("%Y-%m-%d"))
+    # Check suitability
+    suitability_msg = check_crop_suitability(ml_crop, temp, humidity, rainfall)
+    print(suitability_msg)
+
+    # Fetch market prices
+    market_prices = fetch_market_prices(
+        state, district,
+        ["Brinjal", "Tomato", "Raddish"],
+        date=datetime.now().strftime("%Y-%m-%d")
+    )
+
     if market_prices:
         best_crop = max(market_prices, key=market_prices.get)
         best_price = market_prices[best_crop]
     else:
         best_crop, best_price = ml_crop, "N/A"
 
+    # Final combined advice
     advice = f"""
     🌱 Based on soil, weather & market:
     - ML Suggested Crop: {ml_crop}
     - Best Market Crop: {best_crop} (₹{best_price})
     """
-    return advice.strip()
 
+    return advice.strip()
 
 # Example usage
 if __name__ == "__main__":
@@ -191,5 +191,5 @@ if __name__ == "__main__":
         "temperature": 25, "humidity": 80,
         "ph": 6.5, "rainfall": 120
     }
-    advice = give_advice(user_input, city="Bengaluru", state="Karnataka", district="Bengaluru")
+    advice = give_advice(user_input, state="Karnataka", district="Bangalore")
     print(advice)
