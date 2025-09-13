@@ -171,7 +171,6 @@ def give_advice(user_input, city, state, district):
 
     market_prices = fetch_market_prices('Karnataka', 'Bangalore', ['Brinjal', 'Tomato', 'Raddish'], date=datetime.now().strftime("%Y-%m-%d"))
     if market_prices:
-        # market_prices is a dict: {commodity: avg_modal_price}
         best_crop = max(market_prices, key=market_prices.get)
         best_price = market_prices[best_crop]
     else:
