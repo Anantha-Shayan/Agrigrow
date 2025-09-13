@@ -15,16 +15,17 @@ encoder = joblib.load("cr_encoder.pkl")
 
 # Fetch weather (OpenWeatherMap API)
 def get_weather(city):
-    api_key = os.getenv("WEATHER_API_KEY")
+    api_key = os.getenv("OPENWEATHER_API_KEY")
     url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric"
     response = requests.get(url)
     data = response.json()
-
-    # Extract safely
+    #print(data)
+    if response.status_code != 200 or "main" not in data:
+        raise ValueError(f"Error fetching weather data: {data.get('message', 'Unknown error')}")
+    
     temp = data.get("main", {}).get("temp", None)
     humidity = data.get("main", {}).get("humidity", None)
     
-    # OpenWeather gives rainfall in "rain": {"1h": ..., "3h": ...}
     rainfall = None
     if "rain" in data:
         rainfall = data["rain"].get("1h") or data["rain"].get("3h")
@@ -60,7 +61,7 @@ def fetch_market_prices(state, district, crops, date=None):
     data = response.json()
     
     df = pd.DataFrame(data["records"])
-    print("Columns from API:", df.columns.tolist())  # 👀 Debug
+    #print("Columns from API:", df.columns.tolist())
     
     # Normalize column names
     df = df.rename(columns={
@@ -84,47 +85,63 @@ def fetch_market_prices(state, district, crops, date=None):
 
 
 # Rule-based filter
-def rule_based_filter(crop, weather):
-    temp, humidity, rainfall = weather["temperature"], weather["humidity"], weather["rainfall"]
-    
-    rules = {
-        "rice": (20 <= temp <= 35 and rainfall >= 100),
-        "maize": (18 <= temp <= 27 and 50 <= rainfall <= 100),
-        "jute": (24 <= temp <= 37 and rainfall >= 150),
-        "cotton": (21 <= temp <= 30 and 50 <= rainfall <= 100),
-        "coconut": (20 <= temp <= 32 and rainfall >= 100),
-        "papaya": (22 <= temp <= 30 and 100 <= rainfall <= 150),
-        "orange": (15 <= temp <= 29 and 100 <= rainfall <= 120),
-        "apple": (8 <= temp <= 22 and rainfall <= 150),
-        "muskmelon": (20 <= temp <= 30 and 40 <= rainfall <= 60),
-        "watermelon": (20 <= temp <= 30 and 40 <= rainfall <= 60),
-        "grapes": (15 <= temp <= 30 and 75 <= rainfall <= 85),
-        "mango": (24 <= temp <= 30 and rainfall <= 100),
-        "banana": (26 <= temp <= 30 and rainfall >= 100),
-        "pomegranate": (18 <= temp <= 35 and 50 <= rainfall <= 100),
-        "lentil": (18 <= temp <= 30 and 40 <= rainfall <= 60),
-        "blackgram": (25 <= temp <= 35 and 60 <= rainfall <= 80),
-        "mungbean": (25 <= temp <= 35 and 60 <= rainfall <= 80),
-        "mothbeans": (24 <= temp <= 30 and 50 <= rainfall <= 75),
-        "pigeonpeas": (26 <= temp <= 30 and 60 <= rainfall <= 100),
-        "kidneybeans": (18 <= temp <= 27 and 60 <= rainfall <= 120),
-        "chickpea": (10 <= temp <= 30 and 40 <= rainfall <= 60),
-        "coffee": (15 <= temp <= 28 and rainfall >= 150)
+def rule_based_filter(temp, humidity, rainfall):
+
+    rules = { # temp (°C), rainfall (mm), humidity (%)
+        "rice": {"temp": (20, 35), "rainfall": (100, float("inf")), "humidity": (60, 85)},
+        "maize": {"temp": (18, 27), "rainfall": (50, 100), "humidity": (50, 70)},
+        "jute": {"temp": (24, 37), "rainfall": (150, float("inf")), "humidity": (65, 90)},
+        "cotton": {"temp": (21, 30), "rainfall": (50, 100), "humidity": (50, 70)},
+        "coconut": {"temp": (20, 32), "rainfall": (100, float("inf")), "humidity": (60, 80)},
+        "papaya": {"temp": (22, 30), "rainfall": (100, 150), "humidity": (65, 85)},
+        "orange": {"temp": (15, 29), "rainfall": (100, 120), "humidity": (50, 70)},
+        "apple": {"temp": (8, 22), "rainfall": (0, 150), "humidity": (50, 70)},
+        "muskmelon": {"temp": (20, 30), "rainfall": (40, 60), "humidity": (50, 65)},
+        "watermelon": {"temp": (20, 30), "rainfall": (40, 60), "humidity": (50, 65)},
+        "grapes": {"temp": (15, 30), "rainfall": (75, 85), "humidity": (50, 70)},
+        "mango": {"temp": (24, 30), "rainfall": (0, 100), "humidity": (50, 70)},
+        "banana": {"temp": (26, 30), "rainfall": (100, float("inf")), "humidity": (70, 90)},
+        "pomegranate": {"temp": (18, 35), "rainfall": (50, 100), "humidity": (45, 65)},
+        "lentil": {"temp": (18, 30), "rainfall": (40, 60), "humidity": (40, 60)},
+        "blackgram": {"temp": (25, 35), "rainfall": (60, 80), "humidity": (50, 70)},
+        "mungbean": {"temp": (25, 35), "rainfall": (60, 80), "humidity": (50, 70)},
+        "mothbeans": {"temp": (24, 30), "rainfall": (50, 75), "humidity": (40, 60)},
+        "pigeonpeas": {"temp": (26, 30), "rainfall": (60, 100), "humidity": (50, 70)},
+        "kidneybeans": {"temp": (18, 27), "rainfall": (60, 120), "humidity": (50, 70)},
+        "chickpea": {"temp": (10, 30), "rainfall": (40, 60), "humidity": (40, 60)},
+        "coffee": {"temp": (15, 28), "rainfall": (150, float("inf")), "humidity": (70, 90)},
     }
-    return rules.get(crop, True)
+    suitable_crops = []
+    for crop, limits in rules.items():
+        if (limits["temp"][0] <= temp <= limits["temp"][1] and
+            limits["rainfall"][0] <= rainfall <= limits["rainfall"][1] and
+            limits["humidity"][0] <= humidity <= limits["humidity"][1]):
+            suitable_crops.append(crop)
+    
+    if not suitable_crops:
+        global message
+        message = "⚠️ No crops matched exactly for the weather condition. Suggesting nearest match instead."
+        # Find crop with minimum "distance" from limits
+        closest_crop, closest_diff = None, float("inf")
+        for crop, limits in rules.items():
+            diff = abs(temp - np.mean(limits["temp"])) \
+                 + abs(rainfall - np.mean(limits["rainfall"])) \
+                 + abs(humidity - np.mean(limits["humidity"]))
+            if diff < closest_diff:
+                closest_crop, closest_diff = crop, diff
+        suitable_crops = [closest_crop]
+    else : 
+        message = ""           
+    return suitable_crops
 
 
 # Advisory Function
 def give_advice(user_input, city, state, district):
-    """
-    Generate unified advice considering soil, weather, and market prices.
-    user_input: dict, list, or np.array with soil + weather data
-    """
 
     # Ensure correct feature order (same as model training)
     features_order = ["N", "P", "K", "temperature", "humidity", "ph", "rainfall"]
 
-    # 🔹 Convert user_input to DataFrame
+    # Convert user_input to DataFrame
     if isinstance(user_input, dict):
         user_df = pd.DataFrame([user_input], columns=features_order)
     elif isinstance(user_input, (list, np.ndarray)):
@@ -134,32 +151,29 @@ def give_advice(user_input, city, state, district):
     else:
         raise ValueError("❌ user_input must be dict, list, np.array, or DataFrame")
 
-    # Scale
+
     soil_scaled = scaler.transform(user_df)
 
-    # ML prediction
     ml_pred_idx = model.predict(soil_scaled)[0]
     ml_crop = encoder.inverse_transform([ml_pred_idx])[0]
 
-    # Get weather data
     weather_data = get_weather(city)
     temp = weather_data["temp"]
     humidity = weather_data["humidity"]
     rainfall = weather_data["rainfall"]
 
-    # Rule-based filtering
     suitable_crops = rule_based_filter(temp, humidity, rainfall)
     if ml_crop not in suitable_crops:
         print(f"⚠️ Recommended crop {ml_crop} is not suitable under current weather conditions.")
+        print(message)
         if suitable_crops:
             ml_crop = suitable_crops[0]
 
-    # Market price integration
-    market_prices = fetch_market_prices(state, district, suitable_crops or [ml_crop])
-    if not market_prices.empty:
-        best_crop_row = market_prices.loc[market_prices["Modal_price"].idxmax()]
-        best_crop = best_crop_row["Commodity"]
-        best_price = best_crop_row["Modal_price"]
+    market_prices = fetch_market_prices('Karnataka', 'Bangalore', ['Brinjal', 'Tomato', 'Raddish'], date=datetime.now().strftime("%Y-%m-%d"))
+    if market_prices:
+        # market_prices is a dict: {commodity: avg_modal_price}
+        best_crop = max(market_prices, key=market_prices.get)
+        best_price = market_prices[best_crop]
     else:
         best_crop, best_price = ml_crop, "N/A"
 
