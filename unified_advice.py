@@ -1,6 +1,7 @@
 import os
 import joblib
 import requests
+import time
 import numpy as np
 import pandas as pd
 from datetime import datetime
@@ -82,43 +83,44 @@ def fetch_market_prices(state, district, crops, date=None):
     
     return prices
 
+# Weather-based crop requirements
+crop_requirements = {
+    "rice": {"temp": (20, 35), "humidity": (70, 90), "rainfall": (100, float("inf"))},
+    "maize": {"temp": (18, 27), "humidity": (50, 70), "rainfall": (50, 100)},
+    "jute": {"temp": (24, 37), "humidity": (70, 90), "rainfall": (150, float("inf"))},
+    "cotton": {"temp": (21, 30), "humidity": (60, 80), "rainfall": (50, 100)},
+    "coconut": {"temp": (20, 32), "humidity": (70, 90), "rainfall": (100, float("inf"))},
+    "papaya": {"temp": (22, 30), "humidity": (60, 85), "rainfall": (100, 150)},
+    "orange": {"temp": (15, 29), "humidity": (50, 70), "rainfall": (100, 120)},
+    "apple": {"temp": (8, 22), "humidity": (30, 60), "rainfall": (0, 150)},
+    "muskmelon": {"temp": (20, 30), "humidity": (50, 70), "rainfall": (40, 60)},
+    "watermelon": {"temp": (20, 30), "humidity": (50, 70), "rainfall": (40, 60)},
+    "grapes": {"temp": (15, 30), "humidity": (50, 70), "rainfall": (75, 85)},
+    "mango": {"temp": (24, 30), "humidity": (50, 70), "rainfall": (0, 100)},
+    "banana": {"temp": (26, 30), "humidity": (70, 90), "rainfall": (100, float("inf"))},
+    "pomegranate": {"temp": (18, 35), "humidity": (40, 60), "rainfall": (50, 100)},
+    "lentil": {"temp": (18, 30), "humidity": (40, 60), "rainfall": (40, 60)},
+    "blackgram": {"temp": (25, 35), "humidity": (60, 80), "rainfall": (60, 80)},
+    "mungbean": {"temp": (25, 35), "humidity": (60, 80), "rainfall": (60, 80)},
+    "mothbeans": {"temp": (24, 30), "humidity": (50, 70), "rainfall": (50, 75)},
+    "pigeonpeas": {"temp": (26, 30), "humidity": (60, 80), "rainfall": (60, 100)},
+    "kidneybeans": {"temp": (18, 27), "humidity": (50, 70), "rainfall": (60, 120)},
+    "chickpea": {"temp": (10, 30), "humidity": (40, 60), "rainfall": (40, 60)},
+    "coffee": {"temp": (15, 28), "humidity": (70, 90), "rainfall": (150, float("inf"))},
+}
+
 
 def check_crop_suitability(crop, temp, humidity, rainfall):
-    rules = {
-        "rice": {"temp": (20, 35), "rainfall": (100, float("inf")), "humidity": (60, 85)},
-        "maize": {"temp": (18, 27), "rainfall": (50, 100), "humidity": (50, 70)},
-        "jute": {"temp": (24, 37), "rainfall": (150, float("inf")), "humidity": (65, 90)},
-        "cotton": {"temp": (21, 30), "rainfall": (50, 100), "humidity": (50, 70)},
-        "coconut": {"temp": (20, 32), "rainfall": (100, float("inf")), "humidity": (60, 80)},
-        "papaya": {"temp": (22, 30), "rainfall": (100, 150), "humidity": (65, 85)},
-        "orange": {"temp": (15, 29), "rainfall": (100, 120), "humidity": (50, 70)},
-        "apple": {"temp": (8, 22), "rainfall": (0, 150), "humidity": (50, 70)},
-        "muskmelon": {"temp": (20, 30), "rainfall": (40, 60), "humidity": (50, 65)},
-        "watermelon": {"temp": (20, 30), "rainfall": (40, 60), "humidity": (50, 65)},
-        "grapes": {"temp": (15, 30), "rainfall": (75, 85), "humidity": (50, 70)},
-        "mango": {"temp": (24, 30), "rainfall": (0, 100), "humidity": (50, 70)},
-        "banana": {"temp": (26, 30), "rainfall": (100, float("inf")), "humidity": (70, 90)},
-        "pomegranate": {"temp": (18, 35), "rainfall": (50, 100), "humidity": (45, 65)},
-        "lentil": {"temp": (18, 30), "rainfall": (40, 60), "humidity": (40, 60)},
-        "blackgram": {"temp": (25, 35), "rainfall": (60, 80), "humidity": (50, 70)},
-        "mungbean": {"temp": (25, 35), "rainfall": (60, 80), "humidity": (50, 70)},
-        "mothbeans": {"temp": (24, 30), "rainfall": (50, 75), "humidity": (40, 60)},
-        "pigeonpeas": {"temp": (26, 30), "rainfall": (60, 100), "humidity": (50, 70)},
-        "kidneybeans": {"temp": (18, 27), "rainfall": (60, 120), "humidity": (50, 70)},
-        "chickpea": {"temp": (10, 30), "rainfall": (40, 60), "humidity": (40, 60)},
-        "coffee": {"temp": (15, 28), "rainfall": (150, float("inf")), "humidity": (70, 90)},
-    }
-
-    if crop not in rules:
+    if crop not in crop_requirements:
         return f"No rules defined for {crop}"
 
-    limits = rules[crop]
+    limits = crop_requirements[crop]
     reasons = []
 
     if not (limits["temp"][0] <= temp <= limits["temp"][1]):
         reasons.append(f"temperature={temp}°C (expected {limits['temp'][0]}–{limits['temp'][1]}°C)")
     if not (limits["rainfall"][0] <= rainfall <= limits["rainfall"][1]):
-        reasons.append(f"rainfall={rainfall}mm (expected {limits['rainfall'][0]}–{limits['rainfall'][1]}mm)")
+        reasons.append(f"rainfall={rainfall}mm (expected {limits['rainfall'][0]}–{limits['rainfall'][1]} mm)")
     if not (limits["humidity"][0] <= humidity <= limits["humidity"][1]):
         reasons.append(f"humidity={humidity}% (expected {limits['humidity'][0]}–{limits['humidity'][1]}%)")
 
@@ -156,11 +158,48 @@ def give_advice(user_input, state, district):
     rainfall = weather_data["rainfall"]
 
     # Print current weather
-    print(f"\n🌦 Current Weather: Temp={temp}°C, Humidity={humidity}%, Rainfall={rainfall}mm")
+    print('-'*50)
+    print(f"\n🌦 Current Weather: Temp={temp}°C, Humidity={humidity}%, Rainfall={rainfall}mm\n")
+    print('-'*50)
+    print("\nCrop Recommended based on Soil:", ml_crop)
 
-    # Check suitability
+    # Check suitability of ML crop
     suitability_msg = check_crop_suitability(ml_crop, temp, humidity, rainfall)
     print(suitability_msg)
+
+    # If ML crop unsuitable → suggest nearest suitable crop
+    if "not suitable" in suitability_msg:
+        print("\n🔄 Finding nearest suitable alternative crop...")
+        time.sleep(3)
+        nearest_crop = None
+        min_diff = float("inf")
+
+        for crop, limits in crop_requirements.items():
+            # Compute difference for each weather parameter
+            diff = 0
+            if temp < limits["temp"][0]:
+                diff += limits["temp"][0] - temp
+            elif temp > limits["temp"][1]:
+                diff += temp - limits["temp"][1]
+
+            if humidity < limits["humidity"][0]:
+                diff += limits["humidity"][0] - humidity
+            elif humidity > limits["humidity"][1]:
+                diff += humidity - limits["humidity"][1]
+
+            if rainfall < limits["rainfall"][0]:
+                diff += limits["rainfall"][0] - rainfall
+            elif rainfall > limits["rainfall"][1]:
+                diff += rainfall - limits["rainfall"][1]
+
+            # Update nearest crop if this one is closer
+            if diff < min_diff:
+                min_diff = diff
+                nearest_crop = crop
+
+        final_crop = nearest_crop if nearest_crop else ml_crop
+    else:
+        final_crop = ml_crop
 
     # Fetch market prices
     market_prices = fetch_market_prices(
@@ -173,16 +212,18 @@ def give_advice(user_input, state, district):
         best_crop = max(market_prices, key=market_prices.get)
         best_price = market_prices[best_crop]
     else:
-        best_crop, best_price = ml_crop, "N/A"
+        best_crop, best_price = final_crop, "N/A"
 
     # Final combined advice
     advice = f"""
-    🌱 Based on soil, weather & market:
+    \n🌱 Based on soil, weather & market:
     - ML Suggested Crop: {ml_crop}
+    - Final Recommended Crop: {final_crop}
     - Best Market Crop: {best_crop} (₹{best_price})
     """
 
     return advice.strip()
+
 
 # Example usage
 if __name__ == "__main__":
@@ -192,4 +233,6 @@ if __name__ == "__main__":
         "ph": 6.5, "rainfall": 120
     }
     advice = give_advice(user_input, state="Karnataka", district="Bangalore")
+    print('-'*50)
     print(advice)
+    print('-'*50)
