@@ -1,0 +1,102 @@
+<html><head>
+<link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+<link as="style" href="https://fonts.googleapis.com/css2?display=swap&amp;family=Lexend%3Awght%40400%3B500%3B700%3B900&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900" onload="this.rel='stylesheet'" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<meta charset="utf-8"/>
+<title>Stitch Design</title>
+<link href="data:image/x-icon;base64," rel="icon" type="image/x-icon"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style type="text/tailwindcss">
+      :root {
+        --primary-50: #f0fdf4;
+        --primary-100: #dcfce7;
+        --primary-200: #bbf7d0;
+        --primary-300: #86efac;
+        --primary-400: #4ade80;
+        --primary-500: #22c55e;
+        --primary-600: #16a34a;
+        --primary-700: #15803d;
+        --primary-800: #166534;
+        --primary-900: #14532d;
+        --primary-950: #052e16;
+      }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-primary-50 text-primary-950 font-sans">
+<div class="relative flex h-auto min-h-screen w-full flex-col justify-between group/design-root overflow-x-hidden" style='font-family: Lexend, "Noto Sans", sans-serif;'>
+<div class="flex flex-col">
+<header class="flex items-center p-4">
+<button class="flex items-center justify-center p-2 rounded-full hover:bg-primary-100">
+<span class="material-symbols-outlined text-primary-900">arrow_back</span>
+</button>
+<h1 class="text-xl font-bold text-center flex-1 pr-10">Create Account</h1>
+</header>
+<main class="flex flex-col gap-4 p-4 pt-2">
+<div class="relative">
+<label class="text-sm font-medium text-primary-900" for="name">Name</label>
+<input class="form-input mt-1 flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-md border-primary-200 bg-white focus:border-primary-500 focus:ring-primary-500 h-12 placeholder:text-primary-400 p-3 text-base leading-normal" id="name" placeholder="Enter your name" type="text"/>
+</div>
+<div class="relative">
+<label class="text-sm font-medium text-primary-900" for="phone">Phone Number</label>
+<input class="form-input mt-1 flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-md border-primary-200 bg-white focus:border-primary-500 focus:ring-primary-500 h-12 placeholder:text-primary-400 p-3 text-base leading-normal" id="phone" placeholder="Enter your phone number" type="tel"/>
+</div>
+<div class="relative">
+<label class="text-sm font-medium text-primary-900" for="password">Password</label>
+<input class="form-input mt-1 flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-md border-primary-200 bg-white focus:border-primary-500 focus:ring-primary-500 h-12 placeholder:text-primary-400 p-3 text-base leading-normal" id="password" placeholder="Enter your password" type="password"/>
+</div>
+<div class="relative">
+<label class="text-sm font-medium text-primary-900" for="confirm-password">Confirm Password</label>
+<input class="form-input mt-1 flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-md border-primary-200 bg-white focus:border-primary-500 focus:ring-primary-500 h-12 placeholder:text-primary-400 p-3 text-base leading-normal" id="confirm-password" placeholder="Confirm your password" type="password"/>
+</div>
+<div class="relative">
+<label class="text-sm font-medium text-primary-900" for="country">Country</label>
+<select class="form-select mt-1 flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-md border-primary-200 bg-white focus:border-primary-500 focus:ring-primary-500 h-12 text-primary-900 p-3 text-base leading-normal" id="country">
+<option disabled="" selected="">Select your country</option>
+<option value="usa">United States</option>
+<option value="canada">Canada</option>
+<option value="mexico">Mexico</option>
+</select>
+</div>
+<div class="relative">
+<label class="text-sm font-medium text-primary-900" for="state">State</label>
+<select class="form-select mt-1 flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-md border-primary-200 bg-white focus:border-primary-500 focus:ring-primary-500 h-12 text-primary-900 p-3 text-base leading-normal" id="state">
+<option disabled="" selected="">Select your state</option>
+<option value="ny">New York</option>
+<option value="ca">California</option>
+<option value="tx">Texas</option>
+</select>
+</div>
+<div class="relative">
+<label class="text-sm font-medium text-primary-900" for="district">District</label>
+<select class="form-select mt-1 flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-md border-primary-200 bg-white focus:border-primary-500 focus:ring-primary-500 h-12 text-primary-900 p-3 text-base leading-normal" id="district">
+<option disabled="" selected="">Select your district</option>
+<option value="d1">District 1</option>
+<option value="d2">District 2</option>
+<option value="d3">District 3</option>
+</select>
+</div>
+<div class="relative">
+<label class="text-sm font-medium text-primary-900" for="market">Market</label>
+<select class="form-select mt-1 flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-md border-primary-200 bg-white focus:border-primary-500 focus:ring-primary-500 h-12 text-primary-900 p-3 text-base leading-normal" id="market">
+<option disabled="" selected="">Select your market</option>
+<option value="m1">Market A</option>
+<option value="m2">Market B</option>
+<option value="m3">Market C</option>
+</select>
+</div>
+<button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-md h-12 px-5 flex-1 bg-primary-500 text-white text-base font-bold leading-normal tracking-wide shadow-sm hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-primary-50 mt-4">
+<span class="truncate">Sign Up</span>
+</button>
+</main>
+</div>
+<footer class="p-4 pt-2 pb-6">
+<p class="text-primary-700 text-sm font-normal text-center">Already have an account? <a class="font-semibold underline text-primary-600 hover:text-primary-700" href="#">Sign In</a></p>
+</footer>
+</div>
+
+</body></html>

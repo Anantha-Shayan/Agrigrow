@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+<link as="style" href="https://fonts.googleapis.com/css2?display=swap&amp;family=Lexend%3Awght%40400%3B500%3B700%3B900&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900" onload="this.rel='stylesheet'" rel="stylesheet"/>
+<title>Stitch Design</title>
+<link href="data:image/x-icon;base64," rel="icon" type="image/x-icon"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<style type="text/tailwindcss">
+      :root {
+        --primary-color: #17cf17;
+        --primary-text-color: #1a2e1a;
+        --secondary-text-color: #4a5568;
+        --background-color: #f8f8f8;
+      }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-[var(--background-color)]">
+<div class="relative flex h-auto min-h-screen w-full flex-col justify-between group/design-root overflow-x-hidden" style='font-family: Lexend, "Noto Sans", sans-serif;'>
+<div>
+<header class="flex items-center justify-between p-4 pb-2 bg-white">
+<button class="text-[var(--primary-text-color)]">
+<span class="material-symbols-outlined"> arrow_back_ios_new </span>
+</button>
+<h1 class="text-xl font-bold text-[var(--primary-text-color)] flex-1 text-center">Crop Calendar</h1>
+<div class="w-8"></div>
+</header>
+<main class="p-4">
+<div class="bg-white rounded-xl shadow-sm p-4">
+<div class="flex items-center justify-between mb-4">
+<button class="p-2 rounded-full hover:bg-gray-100">
+<span class="material-symbols-outlined text-[var(--secondary-text-color)]"> chevron_left </span>
+</button>
+<h2 class="text-lg font-semibold text-gray-700">May 2024</h2>
+<button class="p-2 rounded-full hover:bg-gray-100">
+<span class="material-symbols-outlined text-[var(--secondary-text-color)]"> chevron_right </span>
+</button>
+</div>
+<div class="grid grid-cols-7 text-center text-sm text-[var(--secondary-text-color)]">
+<div class="font-medium">S</div>
+<div class="font-medium">M</div>
+<div class="font-medium">T</div>
+<div class="font-medium">W</div>
+<div class="font-medium">T</div>
+<div class="font-medium">F</div>
+<div class="font-medium">S</div>
+</div>
+<div class="grid grid-cols-7 mt-2 text-center text-sm text-gray-700">
+<div class="col-start-4 p-2">1</div>
+<div class="p-2">2</div>
+<div class="p-2">3</div>
+<div class="p-2">4</div>
+<div class="p-2 relative">
+<div class="mx-auto flex h-8 w-8 items-center justify-center rounded-full bg-[var(--primary-color)] text-white font-bold">5</div>
+<div class="absolute bottom-0 left-1/2 -translate-x-1/2 flex space-x-0.5 mt-1">
+<span class="block h-1 w-1 rounded-full bg-blue-500"></span>
+<span class="block h-1 w-1 rounded-full bg-yellow-500"></span>
+<span class="block h-1 w-1 rounded-full bg-purple-500"></span>
+</div>
+</div>
+<div class="p-2">6</div>
+<div class="p-2">7</div>
+<div class="p-2">8</div>
+<div class="p-2">9</div>
+<div class="p-2">10</div>
+<div class="p-2">11</div>
+<div class="p-2">12</div>
+<div class="p-2">13</div>
+<div class="p-2">14</div>
+<div class="p-2">15</div>
+<div class="p-2">16</div>
+<div class="p-2">17</div>
+<div class="p-2">18</div>
+<div class="p-2">19</div>
+<div class="p-2">20</div>
+<div class="p-2">21</div>
+<div class="p-2">22</div>
+<div class="p-2">23</div>
+<div class="p-2">24</div>
+<div class="p-2">25</div>
+<div class="p-2">26</div>
+<div class="p-2">27</div>
+<div class="p-2">28</div>
+<div class="p-2">29</div>
+<div class="p-2">30</div>
+</div>
+</div>
+<section class="mt-6">
+<h2 class="text-xl font-bold text-[var(--primary-text-color)] mb-4">Upcoming Tasks</h2>
+<div class="space-y-3">
+<div class="flex items-center gap-4 rounded-xl bg-white p-4 shadow-sm">
+<div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-green-100 text-green-600">
+<span class="material-symbols-outlined">grass</span>
+</div>
+<div class="flex-grow">
+<p class="font-semibold text-[var(--primary-text-color)]">Planting Corn</p>
+<p class="text-sm text-[var(--secondary-text-color)]">8:00 AM</p>
+</div>
+<button class="p-2 text-[var(--secondary-text-color)]">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+<div class="flex items-center gap-4 rounded-xl bg-white p-4 shadow-sm">
+<div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-blue-100 text-blue-600">
+<span class="material-symbols-outlined">water_drop</span>
+</div>
+<div class="flex-grow">
+<p class="font-semibold text-[var(--primary-text-color)]">Watering Tomatoes</p>
+<p class="text-sm text-[var(--secondary-text-color)]">10:00 AM</p>
+</div>
+<button class="p-2 text-[var(--secondary-text-color)]">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+<div class="flex items-center gap-4 rounded-xl bg-white p-4 shadow-sm">
+<div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-yellow-100 text-yellow-600">
+<span class="material-symbols-outlined">science</span>
+</div>
+<div class="flex-grow">
+<p class="font-semibold text-[var(--primary-text-color)]">Fertilizing Wheat</p>
+<p class="text-sm text-[var(--secondary-text-color)]">2:00 PM</p>
+</div>
+<button class="p-2 text-[var(--secondary-text-color)]">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</div>
+</section>
+</main>
+</div>
+<footer class="sticky bottom-0 p-4 bg-transparent">
+<div class="flex justify-end">
+<button class="flex items-center justify-center rounded-full h-16 w-16 bg-[var(--primary-color)] text-white shadow-lg transform hover:scale-105 transition-transform">
+<span class="material-symbols-outlined" style="font-size: 32px">add</span>
+</button>
+</div>
+</footer>
+</div>
+
+</body></html>

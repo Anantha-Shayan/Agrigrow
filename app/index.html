@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AgriSmart</title>
+  <script>
+    window.onload = function() {
+      const loggedIn = localStorage.getItem("loggedIn");
+      if (loggedIn === "true") {
+        // If user already logged in → go to Home
+        window.location.href = "home.html";
+      } else {
+        // If not logged in → go to Language selection
+        window.location.href = "language.html";
+      }
+    }
+  </script>
+</head>
+<body>
+</body>
+</html>
+ 

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Language Selection</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+  <style type="text/tailwindcss">
+    :root {
+      --primary-color: #17cf17;
+      --background-color: #f8fcf8;
+      --text-color: #0e1b0e;
+      --border-color: #d0e7d0;
+    }
+    body {
+      font-family: 'Lexend', sans-serif;
+    }
+    .font-noto-sans {
+      font-family: 'Noto Sans', sans-serif;
+    }
+    .custom-select-arrow {
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%234e974e' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+      background-position: right 0.75rem center;
+      background-repeat: no-repeat;
+      background-size: 1.5em 1.5em;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+    }
+  </style>
+  <style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-[var(--background-color)]">
+  <div class="flex h-screen flex-col items-center justify-center p-6 text-[var(--text-color)]">
+    <div class="w-full max-w-sm text-center">
+      <span class="material-symbols-outlined text-6xl text-[var(--primary-color)]">
+        language
+      </span>
+      <h1 class="mt-4 text-3xl font-bold tracking-tight">Choose a language</h1>
+      <h2 class="font-noto-sans mt-2 text-2xl font-semibold text-gray-600">भाषा चुनें</h2>
+    </div>
+
+    <!-- Language Select -->
+    <div class="mt-12 w-full max-w-sm">
+      <label class="sr-only" for="language-select">Select a language</label>
+      <div class="relative">
+        <select 
+          class="form-select w-full rounded-xl border-2 border-[var(--border-color)] bg-white py-4 pl-4 pr-12 text-lg focus:border-[var(--primary-color)] focus:ring-[var(--primary-color)] custom-select-arrow" 
+          id="language-select">
+
+          <!-- International Languages -->
+          <option>English</option>
+          <option>हिन्दी (Hindi)</option>
+          <option>Español (Spanish)</option>
+          <option>Français (French)</option>
+          <option>Deutsch (German)</option>
+
+          <!-- Indian Regional Languages -->
+          <option>বাংলা (Bengali)</option>
+          <option>தமிழ் (Tamil)</option>
+          <option>తెలుగు (Telugu)</option>
+          <option>मराठी (Marathi)</option>
+          <option>ગુજરાતી (Gujarati)</option>
+          <option>ಕನ್ನಡ (Kannada)</option>
+          <option>മലയാളം (Malayalam)</option>
+          <option>ਪੰਜਾਬੀ (Punjabi)</option>
+          <option>ଓଡ଼ିଆ (Odia)</option>
+          <option>اردو (Urdu)</option>
+          <option>संस्कृतम् (Sanskrit)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Continue Button -->
+    <div class="mt-auto w-full max-w-sm">
+      <button id="continue-btn" 
+        class="w-full rounded-xl bg-[var(--primary-color)] py-4 text-lg font-bold text-white shadow-lg transition-transform duration-200 ease-in-out hover:scale-105 active:scale-100">
+        Continue
+      </button>
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  <script>
+    document.getElementById("continue-btn").addEventListener("click", function () {
+      const selectedLang = document.getElementById("language-select").value;
+      // Save selected language in localStorage
+      localStorage.setItem("appLanguage", selectedLang);
+      alert("Language set to: " + selectedLang);
+      // Redirect to login page (replace with your login.html)
+      window.location.href = "login.html";
+    });
+  </script>
+</body>
+</html>

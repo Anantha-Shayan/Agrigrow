@@ -1,0 +1,99 @@
+<html><head>
+<meta charset="utf-8"/>
+<link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+<link as="style" href="https://fonts.googleapis.com/css2?display=swap&amp;family=Lexend%3Awght%40400%3B500%3B700%3B900&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900" onload="this.rel='stylesheet'" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<title>Stitch Design</title>
+<link href="data:image/x-icon;base64," rel="icon" type="image/x-icon"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style type="text/tailwindcss">
+      :root {
+        --primary-50: #f0fdf4;
+        --primary-100: #dcfce7;
+        --primary-200: #bbf7d0;
+        --primary-300: #86efac;
+        --primary-400: #4ade80;
+        --primary-500: #22c55e;
+        --primary-600: #16a34a;
+        --primary-700: #15803d;
+        --primary-800: #166534;
+        --primary-900: #14532d;
+        --primary-950: #052e16;
+      }
+      .custom-scroll::-webkit-scrollbar {
+        width: 4px;
+      }
+      .custom-scroll::-webkit-scrollbar-track {
+        background-color: transparent;
+      }
+      .custom-scroll::-webkit-scrollbar-thumb {
+        background-color: var(--primary-200);
+        border-radius: 20px;
+        border: transparent;
+      }
+      .custom-scroll::-webkit-scrollbar-thumb:hover {
+        background-color: var(--primary-300);
+      }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-[#f8fcf8]" style='font-family: Lexend, "Noto Sans", sans-serif;'>
+<div class="relative mx-auto flex h-auto min-h-screen w-full max-w-sm flex-col overflow-hidden bg-white shadow-lg group/design-root">
+<div class="sticky top-0 z-10 flex items-center justify-between border-b border-slate-200 bg-white p-4">
+<button class="flex size-10 items-center justify-center rounded-full text-slate-600 hover:bg-slate-100">
+<span class="material-symbols-outlined text-2xl"> arrow_back </span>
+</button>
+<h1 class="text-lg font-bold text-slate-800">Feedback</h1>
+<div class="size-10"></div>
+</div>
+<main class="flex-1 overflow-y-auto custom-scroll p-6">
+<section class="mb-8">
+<h2 class="mb-2 text-2xl font-bold text-slate-900">How can we help?</h2>
+<p class="mb-4 text-slate-600">Your feedback is important to us. Let us know how we can improve.</p>
+<div class="flex flex-col gap-4">
+<textarea class="form-textarea w-full resize-none rounded-lg border border-slate-300 bg-slate-50 p-4 text-base text-slate-800 placeholder-slate-400 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500" placeholder="Enter your feedback here..." rows="6"></textarea>
+<button class="flex w-full cursor-pointer items-center justify-center rounded-lg bg-primary-600 px-4 py-3 text-base font-bold text-white transition-colors hover:bg-primary-700 active:bg-primary-800">
+<span class="truncate">Submit Feedback</span>
+</button>
+</div>
+</section>
+<section>
+<h2 class="mb-4 text-2xl font-bold text-slate-900">Frequently Asked Questions</h2>
+<div class="space-y-3">
+<details class="group rounded-lg border border-slate-200 bg-white transition-all duration-300 hover:border-primary-500">
+<summary class="flex list-none cursor-pointer items-center justify-between p-4">
+<p class="text-base font-medium text-slate-800">How do I use the soil information feature?</p>
+<span class="material-symbols-outlined text-slate-500 transition-transform duration-300 group-open:rotate-180"> expand_more </span>
+</summary>
+<div class="border-t border-slate-200 p-4">
+<p class="text-slate-600">To use the soil information feature, navigate to the 'Soil Health' section from the main menu. You can then either use your device's GPS to get data for your current location or manually search for a specific area. The app will provide detailed information on soil type, composition, and nutrient levels.</p>
+</div>
+</details>
+<details class="group rounded-lg border border-slate-200 bg-white transition-all duration-300 hover:border-primary-500">
+<summary class="flex list-none cursor-pointer items-center justify-between p-4">
+<p class="text-base font-medium text-slate-800">What are the best practices for pest detection?</p>
+<span class="material-symbols-outlined text-slate-500 transition-transform duration-300 group-open:rotate-180"> expand_more </span>
+</summary>
+<div class="border-t border-slate-200 p-4">
+<p class="text-slate-600">For effective pest detection, regularly inspect your crops, especially the undersides of leaves. Use the app's 'Pest ID' feature by taking a clear photo of the suspected pest or crop damage. The app will analyze the image and provide identification and treatment recommendations. Setting up monitoring traps can also provide early warnings.</p>
+</div>
+</details>
+<details class="group rounded-lg border border-slate-200 bg-white transition-all duration-300 hover:border-primary-500">
+<summary class="flex list-none cursor-pointer items-center justify-between p-4">
+<p class="text-base font-medium text-slate-800">How can I get personalized crop advice?</p>
+<span class="material-symbols-outlined text-slate-500 transition-transform duration-300 group-open:rotate-180"> expand_more </span>
+</summary>
+<div class="border-t border-slate-200 p-4">
+<p class="text-slate-600">Personalized crop advice is available in the 'My Farm' section. Complete your farm profile with details like crop types, planting dates, and farm size. Based on this information and local weather data, the app will generate tailored recommendations for irrigation, fertilization, and harvesting schedules to optimize your yield.</p>
+</div>
+</details>
+</div>
+</section>
+</main>
+</div>
+
+</body></html>
