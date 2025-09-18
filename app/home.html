@@ -49,12 +49,14 @@
 <div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden" style='font-family: Lexend, "Noto Sans", sans-serif;'>
 <div class="flex-grow pb-36">
 <header class="sticky top-0 z-10 bg-secondary-50/80 backdrop-blur-sm">
-<div class="flex items-center p-4 pb-2 justify-between">
-<h1 class="text-primary-900 text-2xl font-bold leading-tight tracking-tighter">AgriGrow</h1>
-<button class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 w-10 bg-primary-100 text-primary-800" id="notification-btn">
-<span class="material-symbols-outlined"> notifications </span>
-</button>
-</div>
+  <div class="flex items-center p-4 pb-2 justify-between">
+    <h1 class="text-primary-900 text-2xl font-bold leading-tight tracking-tighter">AgriGrow</h1>
+    <button class="relative flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 w-10 bg-primary-100 text-primary-800" id="notification-btn">
+      <span class="material-symbols-outlined">notifications</span>
+      <span id="alert-dot" class="hidden absolute top-1 right-1 block h-2 w-2 rounded-full bg-red-500"></span>
+    </button>
+  </div>
+
 <div class="px-4 pt-4 pb-6">
 <div class="flex items-center gap-4 rounded-2xl bg-white p-4 shadow-sm">
 <span class="material-symbols-outlined text-6xl text-yellow-500">wb_sunny</span>
@@ -130,15 +132,19 @@
 </section>
 </main>
 </div>
-<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 hidden" id="alert-popup">
-<div class="w-full max-w-sm rounded-2xl bg-white p-6 shadow-lg">
-<div class="flex items-start gap-4">
-<span class="material-symbols-outlined text-4xl text-red-500">warning</span>
-<div class="flex-1">
-<h3 class="text-xl font-bold text-secondary-800">Weather Alert</h3>
-<p class="mt-2 text-secondary-600">Heavy rainfall expected in the next 24 hours. Please take necessary precautions to protect your crops.</p>
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 hidden" id="alert-popup">
+  <div class="w-full max-w-sm rounded-2xl bg-white p-6 shadow-lg">
+    <div class="flex items-start gap-4">
+      <span class="material-symbols-outlined text-4xl text-red-500">warning</span>
+      <div class="flex-1">
+        <h3 class="text-xl font-bold text-secondary-800">Weather Alert</h3>
+        <p id="alert-message" class="mt-2 text-secondary-600">✅ No Alerts</p>
+      </div>
+    </div>
+    <button class="mt-6 w-full rounded-lg bg-primary-500 py-2.5 text-center text-base font-semibold text-white hover:bg-primary-600" id="close-alert">Dismiss</button>
+  </div>
 </div>
-</div>
+
 <button class="mt-6 w-full rounded-lg bg-primary-500 py-2.5 text-center text-base font-semibold text-white hover:bg-primary-600" id="close-alert">Dismiss</button>
 </div>
 </div>
@@ -211,32 +217,43 @@
 </footer>
 </div>
 <script>
-    const moreBtn = document.getElementById('more-btn');
-    const moreMenu = document.getElementById('more-menu');
-    const closeMoreMenu = document.getElementById('close-more-menu');
-    const overlay = document.getElementById('more-menu-overlay');
-    function toggleMenu() {
-      const isHidden = moreMenu.classList.contains('translate-y-full');
-      moreMenu.classList.toggle('translate-y-full', !isHidden);
-      overlay.classList.toggle('hidden', !isHidden);
+  const notificationBtn = document.getElementById('notification-btn');
+  const alertPopup = document.getElementById('alert-popup');
+  const closeAlertBtn = document.getElementById('close-alert');
+  const alertMessage = document.getElementById('alert-message');
+  const alertDot = document.getElementById('alert-dot');
+
+  // ✅ Dummy alert for MVP
+  let currentAlert = "⛈ Heavy Rain expected in next 24 hours!";
+  // let currentAlert = null; // Uncomment this to test "No Alerts"
+
+  function updateAlertUI() {
+    if (currentAlert) {
+      alertMessage.textContent = currentAlert;
+      alertDot.classList.remove('hidden'); // show red dot
+    } else {
+      alertMessage.textContent = "✅ No Alerts";
+      alertDot.classList.add('hidden'); // hide red dot
     }
-    moreBtn.addEventListener('click', toggleMenu);
-    closeMoreMenu.addEventListener('click', toggleMenu);
-    overlay.addEventListener('click', toggleMenu);
-    const notificationBtn = document.getElementById('notification-btn');
-    const alertPopup = document.getElementById('alert-popup');
-    const closeAlertBtn = document.getElementById('close-alert');
-    notificationBtn.addEventListener('click', () => {
-      alertPopup.classList.remove('hidden');
-    });
-    closeAlertBtn.addEventListener('click', () => {
+  }
+
+  notificationBtn.addEventListener('click', () => {
+    updateAlertUI();
+    alertPopup.classList.remove('hidden');
+  });
+
+  closeAlertBtn.addEventListener('click', () => {
+    alertPopup.classList.add('hidden');
+  });
+
+  alertPopup.addEventListener('click', (e) => {
+    if (e.target === alertPopup) {
       alertPopup.classList.add('hidden');
-    });
-    alertPopup.addEventListener('click', (e) => {
-        if (e.target === alertPopup) {
-            alertPopup.classList.add('hidden');
-        }
-    });
-  </script>
+    }
+  });
+
+  // Initialize on page load
+  updateAlertUI();
+</script>
 
 </body></html>

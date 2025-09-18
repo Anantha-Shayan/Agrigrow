@@ -6,21 +6,21 @@ import numpy as np
 import pandas as pd
 import json
 from datetime import datetime
-from sklearn.preprocessing import StandardScaler, LabelEncoder
 
 
-# ------------------ Load ML Model + Scaler + Encoder ------------------
+
 model = joblib.load("cr_model.pkl")  # trained crop recommendation model
 scaler = joblib.load("cr_scaler.pkl")
 encoder = joblib.load("cr_encoder.pkl")
 
-# ------------------ Load ICRISAT District-Crop Map ------------------
+
 with open("district_crop_map.json", "r") as f:
     district_crop_map = json.load(f)
 
 
-# ------------------ Weather API ------------------
+# weather
 def get_weather(city):
+    # global api_key
     api_key = os.getenv("OPENWEATHER_API_KEY")
     url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric"
     response = requests.get(url)
@@ -42,7 +42,7 @@ def get_weather(city):
     }
 
 
-# ------------------ Mandi Market Price API ------------------
+# mandi
 def fetch_highest_market_price(state, district, market, date=None):
     api_key = os.getenv("MANDI_PRICE_KEY")
     if not api_key:
@@ -89,7 +89,7 @@ def fetch_highest_market_price(state, district, market, date=None):
     return best_crop, best_price
 
 
-# ------------------ Crop Suitability Rules ------------------
+# Crop Suitability Rules - from ChatGPT
 crop_requirements = {
     "rice": {"temp": (20, 35), "humidity": (70, 90), "rainfall": (100, float("inf"))},
     "maize": {"temp": (18, 27), "humidity": (50, 70), "rainfall": (50, 100)},
@@ -136,7 +136,6 @@ def check_crop_suitability(crop, temp, humidity, rainfall):
         return f"✅ Recommended crop {crop} is suitable under current weather conditions."
 
 
-# ------------------ Unified Advice ------------------
 def give_advice(user_input, state, district, Market):
     features_order = ["N", "P", "K", "temperature", "humidity", "ph", "rainfall"]
 
